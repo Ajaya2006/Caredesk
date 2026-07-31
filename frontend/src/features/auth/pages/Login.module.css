@@ -1,0 +1,30 @@
+/* Login page styles - using Tailwind for most styling, this is for custom overrides */
+
+.loginContainer {
+  @apply min-h-screen w-full flex bg-white;
+}
+
+.leftPanel {
+  @apply relative hidden lg:flex flex-col justify-center items-start w-[42%] min-h-screen overflow-hidden px-12 xl:px-16;
+}
+
+.rightPanel {
+  @apply flex-1 flex flex-col justify-center items-center px-6 py-12 lg:px-12 xl:px-20 overflow-hidden;
+}
+
+.formWrapper {
+  @apply w-full max-w-[500px] relative;
+}
+
+/* Custom scrollbar for forms */
+.formWrapper ::-webkit-scrollbar {
+  width: 4px;
+}
+
+.formWrapper ::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.formWrapper ::-webkit-scrollbar-thumb {
+  @apply bg-[#1e5dbc] rounded-full;
+}

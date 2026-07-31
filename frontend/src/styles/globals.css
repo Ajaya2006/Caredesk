@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Space+Grotesk:wght@700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply font-body bg-background text-text antialiased transition-colors duration-300;
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  /* Frosted Glass Effects - Using standard Tailwind classes */
+  .frosted {
+    @apply bg-white/60 dark:bg-dark-surface/60 backdrop-blur-lg border border-white/20 dark:border-dark-border/20 shadow-lg;
+  }
+
+  .frosted-card {
+    @apply bg-white/70 dark:bg-dark-surface/70 backdrop-blur-md border border-white/30 dark:border-dark-border/30 rounded-2xl shadow-lg transition-all duration-300;
+  }
+
+  .frosted-card:hover {
+    @apply shadow-xl;
+  }
+
+  .frosted-heavy {
+    @apply bg-white/80 dark:bg-dark-surface/80 backdrop-blur-xl border border-white/20 dark:border-dark-border/20 shadow-lg;
+  }
+
+  .frosted-nav {
+    @apply bg-white/80 dark:bg-dark-surface/80 backdrop-blur-sm border-b border-white/20 dark:border-dark-border/20;
+  }
+
+  /* Glass Effect for Cards */
+  .glass-card {
+    @apply bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border border-white/20 dark:border-dark-border/20 rounded-2xl shadow-lg;
+  }
+
+  /* Hero Frosted */
+  .hero-frosted {
+    @apply bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-secondary-500/20 dark:from-primary-500/30 dark:via-primary-500/20 dark:to-secondary-500/30 backdrop-blur-sm border border-white/20 dark:border-dark-border/20;
+  }
+
+  /* Bottom Sheet Animation */
+  .bottom-sheet-enter {
+    animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .bottom-sheet-exit {
+    animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-100 dark:bg-dark-surface;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 dark:bg-neutral-700 rounded-full hover:bg-neutral-400 dark:hover:bg-neutral-600;
+  }
+
+  /* Dark Mode Transitions */
+  * {
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+  }
+}
+
+@layer utilities {
+  .bg-background {
+    background-color: #F8FAFC;
+  }
+  .dark .bg-background {
+    background-color: #0F172A;
+  }
+  .text-text {
+    color: #0F172A;
+  }
+  .dark .text-text {
+    color: #F1F5F9;
+  }
+  .border-border {
+    border-color: #E2E8F0;
+  }
+  .dark .border-border {
+    border-color: #334155;
+  }
+}

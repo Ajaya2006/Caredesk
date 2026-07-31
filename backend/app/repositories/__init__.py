@@ -1,0 +1,4 @@
+from .base_repository import BaseRepository
+from .doctor_repository import DoctorRepository
+from .patient_repository import PatientRepository
+from .appointment_repository import AppointmentRepository
