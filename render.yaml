@@ -7,9 +7,20 @@ services:
     dockerfilePath: backend/Dockerfile
     dockerContext: backend
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: caredesk-db
-          property: connectionString
       - key: SECRET_KEY
         generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+
+  - type: web
+    name: caredesk-frontend
+    runtime: static
+    plan: free
+    region: oregon
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    staticPublishPath: frontend/dist
