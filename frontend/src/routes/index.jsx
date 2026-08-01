@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import { ProtectedRoute } from './ProtectedRoute';
 import Login from '../features/auth/pages/Login';
+import Signup from '../features/auth/pages/Signup';
 import Dashboard from '../features/dashboard/pages/Dashboard';
 import Doctors from '../features/doctors/pages/Doctors';
 import Patients from '../features/patients/pages/Patients';
@@ -12,6 +13,10 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/signup',
+    element: <Signup />,
   },
   {
     path: '/',

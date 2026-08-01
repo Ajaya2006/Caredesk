@@ -1,11 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+﻿from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from ...core.database import get_db
 from ...services.auth_service import AuthService
 from ...schemas.auth import Token
-from ...core.security import get_current_user
+from ...core.security import get_current_user, get_password_hash
 from ...models.user import User
+from pydantic import BaseModel
+import uuid
+import json
+import urllib.request
+import urllib.error
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -24,6 +29,66 @@ def login(
         )
     access_token = auth_service.create_token(user.user_id)
     return {"access_token": access_token, "token_type": "bearer"}
+
+class GoogleLoginRequest(BaseModel):
+    access_token: str
+
+
+def get_google_user_info(access_token: str):
+    try:
+        request = urllib.request.Request(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        with urllib.request.urlopen(request, timeout=10) as response:
+            return json.load(response)
+    except urllib.error.HTTPError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Google access token",
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Unable to verify Google access token",
+        )
+
+
+@router.post("/google", response_model=Token)
+def google_login(data: GoogleLoginRequest, db: Session = Depends(get_db)):
+    google_user = get_google_user_info(data.access_token)
+    email = google_user.get("email")
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Google account email is required",
+        )
+
+    full_name = google_user.get("name") or email.split("@")[0]
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        username_base = email.split("@")[0]
+        username = username_base
+        while db.query(User).filter(User.username == username).first():
+            username = f"{username_base}_{uuid.uuid4().hex[:8]}"
+
+        user = User(
+            username=username,
+            password_hash=get_password_hash(str(uuid.uuid4())),
+            full_name=full_name,
+            email=email,
+            role="user",
+            is_active=True,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    auth_service = AuthService(db)
+    access_token = auth_service.create_token(user.user_id)
+    return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.get("/me")
 def get_me(current_user: User = Depends(get_current_user)):
