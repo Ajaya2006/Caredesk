@@ -5,8 +5,8 @@ import { z } from 'zod';
 import { getPatients } from '../../../api/patients';
 import { getDoctors } from '../../../api/doctors';
 import { createAppointment } from '../../../api/appointments';
-import { Card, Input, Select, Button, FrostedCard } from '../../../components/ui';
-import { PageTransition } from '../../../components/animations/PageTransition';
+import { Card, Input, Select, Button, FrostedCard } from '../../../Components/ui';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { Calendar, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 

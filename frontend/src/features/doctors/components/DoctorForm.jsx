@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createDoctor, updateDoctor } from '../../../api/doctors';
-import { BottomSheet, Button, Input, Select } from '../../../components/ui';
+import { BottomSheet, Button, Input, Select } from '../../../Components/ui';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
@@ -58,9 +58,9 @@ export const DoctorForm = ({ isOpen, onClose, doctor }) => {
         experience: data.experience ? Number(data.experience) : null,
         availability: data.availability || null,
       };
-      
+
       console.log('Doctor data to save:', cleanedData);
-      
+
       if (doctor) {
         console.log('Updating doctor with ID:', doctor.doctor_id);
         return await updateDoctor(doctor.doctor_id, cleanedData);

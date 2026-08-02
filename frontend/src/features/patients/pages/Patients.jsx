@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getPatients, deletePatient } from '../../../api/patients';
-import { 
-  Table, 
-  TableHeader, 
-  TableRow, 
-  TableCell, 
-  Button, 
-  StatusChip, 
-  EmptyState, 
-  FrostedCard 
-} from '../../../components/ui';
-import { PageTransition } from '../../../components/animations/PageTransition';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  Button,
+  StatusChip,
+  EmptyState,
+  FrostedCard
+} from '../../../Components/ui';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { PatientForm } from '../components/PatientForm';
 import { PatientDetails } from '../components/PatientDetails';
 import { Plus, Pencil, Trash2, Users, Phone, Mail, MapPin, Search, Eye } from 'lucide-react';
@@ -194,8 +194,8 @@ export default function Patients() {
                   const hasError = avatarErrors[patient.patient_id];
 
                   return (
-                    <motion.tr 
-                      key={patient.patient_id} 
+                    <motion.tr
+                      key={patient.patient_id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: index * 0.04 }}
@@ -213,7 +213,7 @@ export default function Patients() {
                                 loading="lazy"
                               />
                             ) : (
-                              <div 
+                              <div
                                 className="w-full h-full flex items-center justify-center text-white font-bold text-sm"
                                 style={{ backgroundColor: fallbackColor }}
                               >

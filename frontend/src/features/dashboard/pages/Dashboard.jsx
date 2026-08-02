@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getDashboardSummary } from '../../../api/dashboard';
-import { StatCard, FrostedCard } from '../../../components/ui';
-import { PageTransition } from '../../../components/animations/PageTransition';
+import { StatCard, FrostedCard } from '../../../Components/ui';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { Stethoscope, Users, Calendar, Clock, CheckCircle, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 

@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPatient, updatePatient } from '../../../api/patients';
-import { BottomSheet, Button, Input, Select } from '../../../components/ui';
+import { BottomSheet, Button, Input, Select } from '../../../Components/ui';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
@@ -73,9 +73,9 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         address: data.address || null,
         visit_reason: data.visit_reason || null,
       };
-      
+
       console.log('Patient data to save:', cleanedData);
-      
+
       if (patient) {
         console.log('Updating patient with ID:', patient.patient_id);
         return await updatePatient(patient.patient_id, cleanedData);
@@ -92,7 +92,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
     onError: (error) => {
       console.error('Mutation error:', error);
       console.error('Error response:', error.response?.data);
-      
+
       // Handle validation errors properly
       const errorData = error.response?.data;
       if (errorData?.detail) {

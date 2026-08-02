@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Phone, Mail, MapPin, Calendar, User, Droplet, Activity } from 'lucide-react';
 import { getPatientAvatar, getFallbackColor } from '../../../lib/avatarService';
-import { StatusChip } from '../../../components/ui';
+import { StatusChip } from '../../../Components/ui';
 
 export const PatientDetails = ({ isOpen, onClose, patient }) => {
   if (!patient) return null;

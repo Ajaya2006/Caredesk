@@ -6,7 +6,7 @@ import {
   createAppointment,
   updateAppointment,
 } from "../../../api/appointments";
-import { BottomSheet, Button, Input, Select } from "../../../components/ui";
+import { BottomSheet, Button, Input, Select } from "../../../Components/ui";
 import { toast } from "sonner";
 import { useEffect } from "react";
 

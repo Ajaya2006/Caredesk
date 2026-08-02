@@ -3,19 +3,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAppointments, updateAppointmentStatus, deleteAppointment } from '../../../api/appointments';
 import { getDoctors } from '../../../api/doctors';
 import { getPatients } from '../../../api/patients';
-import { 
-  Table, 
-  TableHeader, 
-  TableRow, 
-  TableCell, 
-  StatusChip, 
-  EmptyState, 
-  Button, 
-  FrostedCard, 
-  Select 
-} from '../../../components/ui';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  StatusChip,
+  EmptyState,
+  Button,
+  FrostedCard,
+  Select
+} from '../../../Components/ui';
 import { AppointmentForm } from '../components/AppointmentForm';
-import { PageTransition } from '../../../components/animations/PageTransition';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { Plus, Pencil, Trash2, Calendar, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -157,8 +157,8 @@ export default function AppointmentList() {
                 </tr>
               ) : (
                 appointments.map((appointment) => (
-                  <motion.tr 
-                    key={appointment.appointment_id} 
+                  <motion.tr
+                    key={appointment.appointment_id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="border-t border-border dark:border-dark-border hover:bg-background dark:hover:bg-dark-bg transition-colors"
