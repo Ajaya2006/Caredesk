@@ -24,7 +24,14 @@ export default function Dashboard() {
       {/* Hero with Frosted Effect */}
       <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-8">
         <div className="absolute inset-0 hero-frosted" />
-        <div className="absolute inset-0 bg-[url('/illustrations/dashboard-hero.png')] bg-cover bg-center opacity-20" />
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `url(${import.meta.env.BASE_URL}illustrations/dashboard-hero.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
         <div className="relative z-10 flex items-center justify-between h-full px-8">
           <div>
             <h1 className="text-3xl font-heading font-bold text-text dark:text-dark-text">Dashboard</h1>

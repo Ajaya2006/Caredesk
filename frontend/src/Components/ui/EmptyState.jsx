@@ -4,7 +4,7 @@ export const EmptyState = ({ title, description, actionLabel, onAction, illustra
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <img
-        src={`/illustrations/${illustration || 'empty-default'}.png`}
+        src={`${import.meta.env.BASE_URL}illustrations/${illustration || 'empty-default'}.png`}
         alt={title}
         className="w-48 h-48 mb-6 opacity-50 dark:opacity-30"
       />

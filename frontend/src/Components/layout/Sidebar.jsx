@@ -15,35 +15,35 @@ import {
 import { useThemeStore } from '../../store/themeStore';
 
 const navItems = [
-  { 
-    to: '/dashboard', 
-    label: 'Dashboard', 
+  {
+    to: '/dashboard',
+    label: 'Dashboard',
     icon: LayoutDashboard,
-    exact: true 
+    exact: true
   },
-  { 
-    to: '/appointments', 
-    label: 'Appointments', 
+  {
+    to: '/appointments',
+    label: 'Appointments',
     icon: CalendarDays,
-    exact: true 
+    exact: true
   },
-  { 
-    to: '/patients', 
-    label: 'Patients', 
+  {
+    to: '/patients',
+    label: 'Patients',
     icon: Users,
-    exact: true 
+    exact: true
   },
-  { 
-    to: '/doctors', 
-    label: 'Doctors', 
+  {
+    to: '/doctors',
+    label: 'Doctors',
     icon: Stethoscope,
-    exact: true 
+    exact: true
   },
-  { 
-    to: '/appointments/book', 
-    label: 'Appointment Desk', 
+  {
+    to: '/appointments/book',
+    label: 'Appointment Desk',
     icon: CalendarPlus,
-    exact: true 
+    exact: true
   },
 ];
 
@@ -59,10 +59,10 @@ function NavList({ onNavigate, collapsed }) {
     <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 no-scrollbar">
       {navItems.map((item) => {
         // Check if this specific route is active
-        const isActive = item.exact 
-          ? pathname === item.to 
+        const isActive = item.exact
+          ? pathname === item.to
           : pathname.startsWith(item.to);
-        
+
         return (
           <NavLink
             key={item.to}
@@ -113,15 +113,15 @@ function NavList({ onNavigate, collapsed }) {
 function RailBrand({ collapsed }) {
   return (
     <div className="flex items-center gap-3 px-5 py-6 overflow-hidden">
-      <div 
+      <div
         className="flex items-center justify-center shrink-0"
         style={{
           filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08))',
         }}
       >
-        <img 
-          src="/logo.png" 
-          alt="CareDesk" 
+        <img
+          src={`${import.meta.env.BASE_URL}logo.png`}
+          alt="CareDesk"
           className="h-12 w-12 object-contain rounded-xl bg-white/10 dark:bg-dark-surface/20 p-1.5"
         />
       </div>
@@ -135,7 +135,7 @@ function RailBrand({ collapsed }) {
   );
 }
 
-export const Sidebar = ({ mobileOpen = false, onMobileClose = () => {} }) => {
+export const Sidebar = ({ mobileOpen = false, onMobileClose = () => { } }) => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useThemeStore();
   const [collapsed, setCollapsed] = useState(false);

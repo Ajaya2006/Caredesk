@@ -147,7 +147,7 @@ export default function Signup() {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20" />
                 <div className="relative z-10 flex flex-col justify-between p-12 w-full">
                     <div className="flex items-center gap-3">
-                        <img src="/logo.png" alt="CareDesk" className="h-12 w-12 object-contain" />
+                        <img src={`${import.meta.env.BASE_URL}logo.png`} alt="CareDesk" className="h-12 w-12 object-contain" />
                         <div>
                             <p className="text-display text-2xl font-semibold text-text dark:text-dark-text">
                                 CareDesk
@@ -225,7 +225,7 @@ export default function Signup() {
                     className="w-full max-w-[420px]"
                 >
                     <div className="flex items-center justify-center gap-3 mb-8 lg:hidden">
-                        <img src="/logo.png" alt="CareDesk" className="h-10 w-10 object-contain" />
+                        <img src={`${import.meta.env.BASE_URL}logo.png`} alt="CareDesk" className="h-10 w-10 object-contain" />
                         <div>
                             <p className="text-display text-lg font-semibold text-text dark:text-dark-text">
                                 CareDesk

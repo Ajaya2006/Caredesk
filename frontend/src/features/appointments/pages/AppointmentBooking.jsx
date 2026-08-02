@@ -61,7 +61,14 @@ export default function AppointmentBooking() {
     <PageTransition>
       <div className="relative w-full h-40 rounded-card overflow-hidden mb-8">
         <div className="absolute inset-0 bg-gradient-to-r from-primary-500/30 to-secondary-500/30" />
-        <div className="absolute inset-0 bg-[url('/illustrations/booking-hero.png')] bg-cover bg-center opacity-20" />
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `url(${import.meta.env.BASE_URL}illustrations/booking-hero.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
         <div className="frosted absolute inset-0 rounded-card" />
         <div className="relative z-10 flex items-center h-full px-8">
           <div>

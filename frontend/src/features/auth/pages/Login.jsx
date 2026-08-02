@@ -154,12 +154,19 @@ export default function Login() {
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20" />
-        <div className="absolute inset-0 bg-[url('/illustrations/login-hero.png')] bg-cover bg-center opacity-10" />
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url(${import.meta.env.BASE_URL}illustrations/login-hero.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
 
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src={`${import.meta.env.BASE_URL}logo.png`}
               alt="CareDesk"
               className="h-12 w-12 object-contain"
             />
@@ -242,7 +249,7 @@ export default function Login() {
         >
           <div className="flex items-center justify-center gap-3 mb-8 lg:hidden">
             <img
-              src="/logo.png"
+              src={`${import.meta.env.BASE_URL}logo.png`}
               alt="CareDesk"
               className="h-10 w-10 object-contain"
             />
