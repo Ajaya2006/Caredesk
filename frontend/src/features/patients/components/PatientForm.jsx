@@ -1,11 +1,14 @@
+// frontend/src/features/patients/components/PatientForm.jsx
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPatient, updatePatient } from '../../../api/patients';
-import { BottomSheet, Button, Input, Select } from '../../../Components/ui';
+import { BottomSheet, Button, Input, Select } from '../../../components/ui';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 const patientSchema = z.object({
   patient_name: z.string().min(1, 'Name is required'),
@@ -16,6 +19,15 @@ const patientSchema = z.object({
   address: z.string().optional(),
   visit_reason: z.string().optional(),
 });
+
+// Spring preset for form fields
+const fieldSpring = {
+  type: 'spring',
+  stiffness: 350,
+  damping: 28,
+  mass: 0.6,
+  bounce: 0.05,
+};
 
 export const PatientForm = ({ isOpen, onClose, patient }) => {
   const queryClient = useQueryClient();
@@ -63,7 +75,6 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
 
   const mutation = useMutation({
     mutationFn: async (data) => {
-      // Clean data - convert empty strings to null
       const cleanedData = {
         patient_name: data.patient_name,
         phone: data.phone || null,
@@ -74,43 +85,19 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         visit_reason: data.visit_reason || null,
       };
 
-      console.log('Patient data to save:', cleanedData);
-
       if (patient) {
-        console.log('Updating patient with ID:', patient.patient_id);
         return await updatePatient(patient.patient_id, cleanedData);
       } else {
         return await createPatient(cleanedData);
       }
     },
-    onSuccess: (data) => {
-      console.log('Mutation success:', data);
+    onSuccess: () => {
       queryClient.invalidateQueries(['patients']);
       toast.success(patient ? 'Patient updated successfully' : 'Patient created successfully');
       onClose();
     },
     onError: (error) => {
-      console.error('Mutation error:', error);
-      console.error('Error response:', error.response?.data);
-
-      // Handle validation errors properly
-      const errorData = error.response?.data;
-      if (errorData?.detail) {
-        if (Array.isArray(errorData.detail)) {
-          // Pydantic validation errors
-          const messages = errorData.detail.map((err) => {
-            const field = err.loc?.join('.') || 'field';
-            return `${field}: ${err.msg}`;
-          }).join('\n');
-          toast.error(`Validation Error:\n${messages}`);
-        } else if (typeof errorData.detail === 'string') {
-          toast.error(errorData.detail);
-        } else {
-          toast.error('Operation failed. Please check your input.');
-        }
-      } else {
-        toast.error('Operation failed. Please try again.');
-      }
+      toast.error(error.response?.data?.detail || 'Operation failed. Please try again.');
     },
   });
 
@@ -118,61 +105,167 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
     mutation.mutate(data);
   };
 
+  // Staggered field animation delay
+  const getFieldDelay = (index) => 0.05 + index * 0.03;
+
   return (
-    <BottomSheet
-      isOpen={isOpen}
-      onClose={onClose}
-      title={patient ? 'Edit Patient' : 'Add New Patient'}
-    >
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={patient ? 'Edit Patient' : 'Add New Patient'}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Input
-          placeholder="Full Name"
-          {...register('patient_name')}
-          error={errors.patient_name?.message}
-        />
-        <Input
-          placeholder="Phone"
-          {...register('phone')}
-          error={errors.phone?.message}
-        />
-        <Input
-          placeholder="Email"
-          type="email"
-          {...register('email')}
-          error={errors.email?.message}
-        />
-        <Input
-          placeholder="Age"
-          type="number"
-          {...register('age', { valueAsNumber: true })}
-          error={errors.age?.message}
-        />
-        <Select
-          options={[
-            { value: '', label: 'Select Gender' },
-            { value: 'Male', label: 'Male' },
-            { value: 'Female', label: 'Female' },
-            { value: 'Other', label: 'Other' },
-          ]}
-          {...register('gender')}
-          error={errors.gender?.message}
-        />
-        <Input
-          placeholder="Address"
-          {...register('address')}
-        />
-        <Input
-          placeholder="Visit Reason"
-          {...register('visit_reason')}
-        />
-        <div className="flex justify-end gap-3 pt-4 border-t border-border dark:border-dark-border">
-          <Button variant="secondary" type="button" onClick={onClose}>
+        {/* Full Name */}
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(0) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Full Name <span className="text-danger">*</span>
+          </label>
+          <Input
+            placeholder="Enter full name"
+            {...register('patient_name')}
+            error={errors.patient_name?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        {/* Phone */}
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(1) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Phone
+          </label>
+          <Input
+            placeholder="Enter phone number"
+            {...register('phone')}
+            error={errors.phone?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        {/* Email */}
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(2) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Email
+          </label>
+          <Input
+            placeholder="Enter email address"
+            type="email"
+            {...register('email')}
+            error={errors.email?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        {/* Age */}
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(3) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Age
+          </label>
+          <Input
+            placeholder="Enter age"
+            type="number"
+            {...register('age', { valueAsNumber: true })}
+            error={errors.age?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        {/* Gender */}
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(4) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Gender
+          </label>
+          <Select
+            options={[
+              { value: '', label: 'Select Gender' },
+              { value: 'Male', label: 'Male' },
+              { value: 'Female', label: 'Female' },
+              { value: 'Other', label: 'Other' },
+            ]}
+            {...register('gender')}
+            error={errors.gender?.message}
+            placeholder="Select Gender"
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        {/* Address */}
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(5) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Address
+          </label>
+          <Input
+            placeholder="Enter address"
+            {...register('address')}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        {/* Visit Reason */}
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(6) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Visit Reason
+          </label>
+          <Input
+            placeholder="Enter reason for visit"
+            {...register('visit_reason')}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        {/* Action Buttons */}
+        <motion.div 
+          className="flex justify-end gap-3 pt-4 mt-4 border-t border-white/20 dark:border-dark-border/20"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(7) }}
+        >
+          <Button 
+            variant="secondary" 
+            type="button" 
+            onClick={onClose}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          >
             Cancel
           </Button>
-          <Button variant="primary" type="submit" isLoading={mutation.isPending}>
-            {patient ? 'Update' : 'Create'} Patient
+          <Button 
+            variant="primary" 
+            type="submit" 
+            isLoading={mutation.isPending}
+          >
+            {patient ? 'Update Patient' : 'Create Patient'}
           </Button>
-        </div>
+        </motion.div>
       </form>
     </BottomSheet>
   );

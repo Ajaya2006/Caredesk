@@ -1,23 +1,23 @@
+// frontend/src/features/patients/pages/Patients.jsx
+
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getPatients, deletePatient } from '../../../api/patients';
 import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableCell,
   Button,
   StatusChip,
   EmptyState,
-  FrostedCard
-} from '../../../Components/ui';
-import { PageTransition } from '../../../Components/animations/PageTransition';
+  FrostedCard,
+  Input,
+  Select
+} from '../../../components/ui';
+import { PageTransition } from '../../../components/animations/PageTransition';
 import { PatientForm } from '../components/PatientForm';
 import { PatientDetails } from '../components/PatientDetails';
 import { Plus, Pencil, Trash2, Users, Phone, Mail, MapPin, Search, Eye } from 'lucide-react';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
-import { getPatientAvatar, getFallbackColor, preloadPatientAvatars } from '../../../lib/avatarService';
+import { getAvatar, getFallbackColor, preloadAvatars } from '../../../lib/avatarService';
 
 export default function Patients() {
   const queryClient = useQueryClient();
@@ -28,17 +28,33 @@ export default function Patients() {
   const [searchTerm, setSearchTerm] = useState('');
   const [avatarErrors, setAvatarErrors] = useState({});
 
-  const { data: patients = [], isLoading, refetch } = useQuery({
+  // Fetch patients from API
+  const { data: patients = [], isLoading, error, refetch } = useQuery({
     queryKey: ['patients'],
     queryFn: getPatients,
     staleTime: 1000 * 60,
+    retry: 2,
   });
 
+  // Preload avatars when patients load
   useEffect(() => {
     if (patients.length > 0) {
-      preloadPatientAvatars(patients);
+      preloadAvatars(patients, 'patient');
     }
   }, [patients]);
+
+  // Log data for debugging
+  useEffect(() => {
+    console.log('📋 Patients data from API:', patients);
+  }, [patients]);
+
+  // Show error if API fails
+  useEffect(() => {
+    if (error) {
+      console.error('❌ Error fetching patients:', error);
+      toast.error('Failed to load patients. Please refresh the page.');
+    }
+  }, [error]);
 
   const deleteMutation = useMutation({
     mutationFn: deletePatient,
@@ -48,15 +64,22 @@ export default function Patients() {
       refetch();
     },
     onError: (error) => {
+      console.error('❌ Delete error:', error);
       toast.error(error.response?.data?.detail || 'Failed to delete patient');
     },
   });
 
-  const filteredPatients = patients.filter((patient) =>
-    patient.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    patient.phone?.includes(searchTerm) ||
-    patient.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter patients by search term
+  const filteredPatients = patients.filter((patient) => {
+    if (!searchTerm) return true;
+    const search = searchTerm.toLowerCase();
+    return (
+      patient.patient_name?.toLowerCase().includes(search) ||
+      patient.phone?.includes(search) ||
+      patient.email?.toLowerCase().includes(search) ||
+      patient.address?.toLowerCase().includes(search)
+    );
+  });
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this patient?')) {
@@ -79,6 +102,7 @@ export default function Patients() {
     setIsFormOpen(true);
   };
 
+  // Calculate stats from real data
   const totalPatients = patients.length;
   const activePatients = patients.filter(p => p.is_active !== false).length;
   const malePatients = patients.filter(p => p.gender?.toLowerCase() === 'male').length;
@@ -92,6 +116,20 @@ export default function Patients() {
   const handleAvatarError = (patientId) => {
     setAvatarErrors(prev => ({ ...prev, [patientId]: true }));
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <PageTransition>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#234EC8] mx-auto"></div>
+            <p className="mt-4 text-muted dark:text-dark-muted">Loading patients...</p>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition>
@@ -130,7 +168,7 @@ export default function Patients() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-surface dark:bg-dark-surface rounded-2xl border border-border dark:border-dark-border shadow-card p-4"
+            className="bg-white/70 dark:bg-dark-surface/70 backdrop-blur-md rounded-2xl border border-white/30 dark:border-dark-border/30 shadow-lg p-4"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -154,7 +192,7 @@ export default function Patients() {
             placeholder="Search patients by name, phone, or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-12 rounded-xl border border-input bg-surface dark:bg-dark-surface pl-10 pr-4 text-text dark:text-dark-text placeholder:text-muted dark:placeholder-dark-muted focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all"
+            className="w-full h-12 rounded-xl border border-input bg-surface dark:bg-dark-surface pl-10 pr-4 text-text dark:text-dark-text placeholder:text-muted dark:placeholder-dark-muted focus:ring-2 focus:ring-[#234EC8]/50 focus:border-[#234EC8] transition-all"
           />
         </div>
       </div>
@@ -165,12 +203,12 @@ export default function Patients() {
           <table className="w-full text-sm">
             <thead className="bg-background dark:bg-dark-bg border-b border-border dark:border-dark-border">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider" style={{ width: '22%' }}>Patient</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider" style={{ width: '30%' }}>Contact</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider" style={{ width: '10%' }}>Age</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider" style={{ width: '12%' }}>Gender</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider" style={{ width: '12%' }}>Status</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider" style={{ width: '14%' }}>Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider w-[22%]">Patient</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider w-[30%]">Contact</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider w-[10%]">Age</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider w-[12%]">Gender</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider w-[12%]">Status</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-muted dark:text-dark-muted uppercase tracking-wider w-[14%]">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -178,7 +216,7 @@ export default function Patients() {
                 <tr>
                   <td colSpan="6" className="text-center py-8">
                     <div className="flex justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#234EC8]" />
                     </div>
                   </td>
                 </tr>
@@ -196,7 +234,7 @@ export default function Patients() {
                 </tr>
               ) : (
                 filteredPatients.map((patient, index) => {
-                  const avatarUrl = getPatientAvatar(patient.patient_id, patient.patient_name);
+                  const avatarUrl = getAvatar(patient.patient_id, patient.patient_name, 'patient');
                   const fallbackColor = getFallbackColor(patient.patient_id);
                   const hasError = avatarErrors[patient.patient_id];
 
@@ -286,7 +324,7 @@ export default function Patients() {
                           </button>
                           <button
                             onClick={() => handleEdit(patient)}
-                            className="p-1.5 rounded-lg bg-primary-500/10 text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-200 group"
+                            className="p-1.5 rounded-lg bg-[#234EC8]/10 text-[#234EC8] hover:bg-[#234EC8] hover:text-white transition-all duration-200 group"
                             title="Edit Patient"
                           >
                             <Pencil className="w-4 h-4" />

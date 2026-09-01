@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Card } from './Card';
+import { Button } from './Button';  // If used
 
 export const StatCard = ({ label, value, icon: Icon, color, loading, delay = 0 }) => {
   if (loading) {
@@ -11,7 +12,7 @@ export const StatCard = ({ label, value, icon: Icon, color, loading, delay = 0 }
   }
 
   const colorMap = {
-    primary: 'bg-primary-500/10 text-primary-500 dark:bg-primary-400/20 dark:text-primary-400',
+    primary: 'bg-[#234EC8]/10 text-[#234EC8] dark:bg-[#234EC8]/20 dark:text-[#234EC8]',
     secondary: 'bg-secondary-500/10 text-secondary-500 dark:bg-secondary-400/20 dark:text-secondary-400',
     success: 'bg-success/10 text-success dark:bg-success/20 dark:text-success',
     warning: 'bg-warning/10 text-warning dark:bg-warning/20 dark:text-warning',
@@ -23,14 +24,9 @@ export const StatCard = ({ label, value, icon: Icon, color, loading, delay = 0 }
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{
-        type: 'spring',
-        stiffness: 300,
-        damping: 25,
-        delay,
-      }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25, delay }}
     >
-      <Card className="hover:shadow-card-hover transition">
+      <Card className="bg-white/70 dark:bg-dark-surface/70 backdrop-blur-md border border-white/30 dark:border-dark-border/30 shadow-lg hover:shadow-xl transition">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm text-muted dark:text-dark-muted font-medium">{label}</p>

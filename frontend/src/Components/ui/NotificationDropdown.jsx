@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, CheckCircle, Clock, AlertCircle, Calendar, User, Stethoscope } from 'lucide-react';
+import { Button } from './Button';  // If used
 
 const notifications = [
   {
@@ -82,7 +83,7 @@ export const NotificationDropdown = ({ isOpen, onClose }) => {
                 <Bell className="w-4 h-4 text-muted dark:text-dark-muted" />
                 <span className="text-sm font-semibold text-text dark:text-dark-text">Notifications</span>
                 {unreadCount > 0 && (
-                  <span className="text-xs bg-primary-500 text-white px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-[#234EC8] text-white px-2 py-0.5 rounded-full">
                     {unreadCount}
                   </span>
                 )}
@@ -90,7 +91,7 @@ export const NotificationDropdown = ({ isOpen, onClose }) => {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="text-xs text-primary-500 hover:text-primary-600 transition-colors"
+                  className="text-xs text-[#234EC8] hover:text-[#1a3a9e] transition-colors"
                 >
                   Mark all as read
                 </button>
@@ -112,7 +113,7 @@ export const NotificationDropdown = ({ isOpen, onClose }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className={`px-4 py-3 border-b border-border/50 dark:border-dark-border/50 hover:bg-background/50 dark:hover:bg-dark-bg/50 transition-colors cursor-pointer ${
-                      !notif.read ? 'bg-primary-500/5 dark:bg-primary-400/5' : ''
+                      !notif.read ? 'bg-[#234EC8]/5 dark:bg-[#234EC8]/5' : ''
                     }`}
                     onClick={() => markAsRead(notif.id)}
                   >
@@ -126,7 +127,7 @@ export const NotificationDropdown = ({ isOpen, onClose }) => {
                             {notif.title}
                           </p>
                           {!notif.read && (
-                            <span className="w-2 h-2 rounded-full bg-primary-500 shrink-0 mt-1.5" />
+                            <span className="w-2 h-2 rounded-full bg-[#234EC8] shrink-0 mt-1.5" />
                           )}
                         </div>
                         <p className="text-xs text-muted dark:text-dark-muted mt-0.5 line-clamp-2">
@@ -147,9 +148,8 @@ export const NotificationDropdown = ({ isOpen, onClose }) => {
               <button
                 onClick={() => {
                   onClose();
-                  // Navigate to notifications page (future)
                 }}
-                className="w-full text-center text-xs text-primary-500 hover:text-primary-600 transition-colors py-1"
+                className="w-full text-center text-xs text-[#234EC8] hover:text-[#1a3a9e] transition-colors py-1"
               >
                 View all notifications
               </button>

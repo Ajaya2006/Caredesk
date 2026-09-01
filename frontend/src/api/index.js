@@ -1,56 +1,59 @@
-import axios from 'axios';
+// frontend/src/api/index.js
 
-// Use an environment-configurable API base URL for production builds
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+import axios from "axios";
+
+// ✅ Use the correct backend URL
+const API_URL = import.meta.env.VITE_API_URL || 'https://caredesk-dd8k.onrender.com/api/v1';
+
+console.log("========== API CONFIG ==========");
+console.log("API URL:", API_URL);
+console.log("Environment:", import.meta.env.MODE);
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
+  timeout: 30000,
 });
 
-// Request interceptor - add token
+// Attach JWT token automatically
 api.interceptors.request.use(
   (config) => {
-    // Check both localStorage and sessionStorage
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    console.log('🔑 Token from storage:', token ? 'Yes (length: ' + token.length + ')' : 'No');
-    
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('✅ Authorization header added');
-    } else {
-      console.log('❌ No token found in storage');
     }
-    
-    console.log(`📤 ${config.method.toUpperCase()} ${config.url}`);
+
     return config;
   },
-  (error) => {
-    console.error('❌ Request interceptor error:', error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor - handle 401
+// Better error logging
 api.interceptors.response.use(
-  (response) => {
-    console.log(`✅ ${response.status} ${response.config.url}`);
-    return response;
-  },
+  (response) => response,
   (error) => {
-    console.error(`❌ Response error:`, error.response?.status, error.response?.data);
-    
+    console.error("========== API ERROR ==========");
+    console.error("URL:", error.config?.baseURL + error.config?.url);
+    console.error("Method:", error.config?.method);
+    console.error("Status:", error.response?.status);
+    console.error("Response:", error.response?.data);
+    console.error("===============================");
+
+    // If unauthorized (401), clear token and redirect to login
     if (error.response?.status === 401) {
-      console.log('🔒 Unauthorized - clearing token and redirecting to login');
-      // Clear both storages
+      console.warn("Unauthorized - clearing token and redirecting to login");
       localStorage.removeItem('token');
       sessionStorage.removeItem('token');
-      // Redirect to login
-      window.location.href = '/login';
+      
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
     }
+
     return Promise.reject(error);
   }
 );

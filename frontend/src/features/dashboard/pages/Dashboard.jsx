@@ -1,15 +1,48 @@
+// frontend/src/features/dashboard/pages/Dashboard.jsx
+
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getDashboardSummary } from '../../../api/dashboard';
-import { StatCard, FrostedCard } from '../../../Components/ui';
-import { PageTransition } from '../../../Components/animations/PageTransition';
+import { StatCard, FrostedCard } from '../../../components/ui';
+import { PageTransition } from '../../../components/animations/PageTransition';
 import { Stethoscope, Users, Calendar, Clock, CheckCircle, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useUserStore } from '../../../store/userStore';
 
 export default function Dashboard() {
-  const { data, isLoading } = useQuery({
+  const { user, fetchUser, isLoading: userLoading } = useUserStore();
+  const [isReady, setIsReady] = useState(false);
+  
+  useEffect(() => {
+    const loadUser = async () => {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (token && !user) {
+        await fetchUser();
+      }
+      setIsReady(true);
+    };
+    
+    loadUser();
+  }, [user, fetchUser]);
+
+  const { data, isLoading: dashboardLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: getDashboardSummary,
+    enabled: !!user,
   });
+
+  if (userLoading || !isReady || !user) {
+    return (
+      <PageTransition>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="mt-4 text-muted dark:text-dark-muted">Loading dashboard...</p>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
 
   const stats = [
     { label: 'Total Doctors', value: data?.totalDoctors || 0, icon: Stethoscope, color: 'primary' },
@@ -21,24 +54,25 @@ export default function Dashboard() {
 
   return (
     <PageTransition>
-      {/* Hero with Frosted Effect */}
       <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-8">
         <div className="absolute inset-0 hero-frosted" />
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `url(${import.meta.env.BASE_URL}illustrations/dashboard-hero.png)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+        <div className="absolute inset-0 bg-[url('/illustrations/dashboard-hero.png')] bg-cover bg-center opacity-20" />
         <div className="relative z-10 flex items-center justify-between h-full px-8">
           <div>
             <h1 className="text-3xl font-heading font-bold text-text dark:text-dark-text">Dashboard</h1>
-            <p className="text-muted dark:text-dark-muted">Welcome back, Admin</p>
+            <p className="text-muted dark:text-dark-muted">
+              Welcome back, {user?.full_name || 'User'}!
+            </p>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-muted dark:text-dark-muted">{new Date().toLocaleDateString()}</span>
+            <span className="text-muted dark:text-dark-muted">
+              {new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </span>
             <button className="p-2 rounded-xl bg-primary-500/10 text-primary-500 hover:bg-primary-500/20 transition-colors">
               <Activity className="w-5 h-5" />
             </button>
@@ -46,14 +80,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
         {stats.map((stat, idx) => (
-          <StatCard key={idx} {...stat} loading={isLoading} delay={idx * 0.05} />
+          <StatCard key={idx} {...stat} loading={dashboardLoading} delay={idx * 0.05} />
         ))}
       </div>
 
-      {/* Recent Activity & Upcoming Appointments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         <FrostedCard>
           <h3 className="text-lg font-heading font-semibold text-text dark:text-dark-text mb-4">Recent Activity</h3>

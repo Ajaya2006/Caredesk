@@ -3,7 +3,7 @@ import { clsx } from 'clsx';
 export const Table = ({ children, className }) => {
   return (
     <div className={clsx(
-      'overflow-x-auto bg-surface dark:bg-dark-surface rounded-2xl border border-border dark:border-dark-border shadow-card',
+      'overflow-x-auto bg-white/70 dark:bg-dark-surface/70 backdrop-blur-md rounded-2xl border border-white/30 dark:border-dark-border/30 shadow-lg',
       className
     )}>
       <table className="w-full text-sm">{children}</table>

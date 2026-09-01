@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from ...core.database import get_db
 from ...services.auth_service import AuthService
-from ...schemas.auth import Token
+from ...schemas.auth import Token, UserCreate, UserOut
 from ...core.security import get_current_user, get_password_hash
 from ...models.user import User
 from pydantic import BaseModel
@@ -33,7 +33,6 @@ def login(
 class GoogleLoginRequest(BaseModel):
     access_token: str
 
-
 def get_google_user_info(access_token: str):
     try:
         request = urllib.request.Request(
@@ -52,7 +51,6 @@ def get_google_user_info(access_token: str):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Unable to verify Google access token",
         )
-
 
 @router.post("/google", response_model=Token)
 def google_login(data: GoogleLoginRequest, db: Session = Depends(get_db)):
@@ -78,7 +76,7 @@ def google_login(data: GoogleLoginRequest, db: Session = Depends(get_db)):
             password_hash=get_password_hash(str(uuid.uuid4())),
             full_name=full_name,
             email=email,
-            role="user",
+            role="admin",  # default role for new users
             is_active=True,
         )
         db.add(user)
@@ -89,6 +87,40 @@ def google_login(data: GoogleLoginRequest, db: Session = Depends(get_db)):
     access_token = auth_service.create_token(user.user_id)
     return {"access_token": access_token, "token_type": "bearer"}
 
+# New signup endpoint
+class UserCreateSchema(BaseModel):
+    name: str
+    email: str
+    password: str
+
+@router.post("/register", response_model=Token)
+def register(user_data: UserCreateSchema, db: Session = Depends(get_db)):
+    # Check if user exists
+    existing = db.query(User).filter(
+        (User.username == user_data.email) | (User.email == user_data.email)
+    ).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Create user with email as username (or use name)
+    hashed = get_password_hash(user_data.password)
+    new_user = User(
+        user_id=uuid.uuid4(),
+        username=user_data.email,  # using email as username
+        password_hash=hashed,
+        full_name=user_data.name,
+        email=user_data.email,
+        role="admin",
+        is_active=True,
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    # Return token
+    auth_service = AuthService(db)
+    access_token = auth_service.create_token(new_user.user_id)
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me")
 def get_me(current_user: User = Depends(get_current_user)):

@@ -1,3 +1,5 @@
+// frontend/src/components/ui/Button.jsx
+
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 
@@ -11,15 +13,15 @@ export const Button = ({
   onClick,
   ...props
 }) => {
-  const base = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  const base = 'inline-flex items-center justify-center font-semibold rounded-button transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
   const variants = {
-    primary: 'bg-primary-500 text-white hover:bg-primary-600 shadow-lg shadow-primary-500/25 dark:shadow-primary-400/20',
+    primary: 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm hover:shadow-md',
     secondary: 'bg-surface text-text border border-border hover:bg-background dark:bg-dark-surface dark:text-dark-text dark:border-dark-border dark:hover:bg-dark-bg',
-    danger: 'bg-danger text-white hover:bg-danger/90 shadow-lg shadow-danger/25',
-    success: 'bg-success text-white hover:bg-success/90 shadow-lg shadow-success/25',
-    outline: 'border-2 border-primary-500 text-primary-500 hover:bg-primary-500/10 dark:border-primary-400 dark:text-primary-400',
+    danger: 'bg-danger-500 text-white hover:bg-danger-600 shadow-sm hover:shadow-md',
+    success: 'bg-success-500 text-white hover:bg-success-600 shadow-sm hover:shadow-md',
+    outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-900/20',
     ghost: 'text-muted hover:bg-background dark:hover:bg-dark-bg',
-    icon: 'p-2 rounded-lg hover:bg-background dark:hover:bg-dark-bg transition-colors',
+    frosted: 'bg-frost dark:bg-frost-dark backdrop-blur-sm border border-frost-border dark:border-dark-border/30 text-text dark:text-dark-text hover:bg-white/90 dark:hover:bg-dark-surface/90',
   };
   const sizes = {
     sm: 'px-3 py-1.5 text-sm gap-1.5',
@@ -30,9 +32,9 @@ export const Button = ({
 
   return (
     <motion.button
-      whileHover={!disabled && !isLoading ? { scale: 1.03 } : {}}
+      whileHover={!disabled && !isLoading ? { y: -2, scale: 1.01 } : {}}
       whileTap={!disabled && !isLoading ? { scale: 0.97 } : {}}
-      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      transition={{ duration: 0.2 }}
       className={clsx(base, variants[variant], sizes[size] || sizes.md, className)}
       disabled={disabled || isLoading}
       onClick={onClick}

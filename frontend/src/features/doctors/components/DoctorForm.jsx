@@ -1,11 +1,14 @@
+// frontend/src/features/doctors/components/DoctorForm.jsx
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createDoctor, updateDoctor } from '../../../api/doctors';
-import { BottomSheet, Button, Input, Select } from '../../../Components/ui';
+import { BottomSheet, Button, Input, Select } from '../../../components/ui';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 const doctorSchema = z.object({
   doctor_name: z.string().min(1, 'Name is required'),
@@ -15,6 +18,14 @@ const doctorSchema = z.object({
   experience: z.number().min(0, 'Experience cannot be negative').optional(),
   availability: z.string().optional(),
 });
+
+const fieldSpring = {
+  type: 'spring',
+  stiffness: 350,
+  damping: 28,
+  mass: 0.6,
+  bounce: 0.05,
+};
 
 export const DoctorForm = ({ isOpen, onClose, doctor }) => {
   const queryClient = useQueryClient();
@@ -45,6 +56,15 @@ export const DoctorForm = ({ isOpen, onClose, doctor }) => {
         experience: doctor.experience || '',
         availability: doctor.availability || '',
       });
+    } else {
+      reset({
+        doctor_name: '',
+        specialization: '',
+        phone: '',
+        email: '',
+        experience: '',
+        availability: '',
+      });
     }
   }, [doctor, reset]);
 
@@ -59,25 +79,19 @@ export const DoctorForm = ({ isOpen, onClose, doctor }) => {
         availability: data.availability || null,
       };
 
-      console.log('Doctor data to save:', cleanedData);
-
       if (doctor) {
-        console.log('Updating doctor with ID:', doctor.doctor_id);
         return await updateDoctor(doctor.doctor_id, cleanedData);
       } else {
         return await createDoctor(cleanedData);
       }
     },
-    onSuccess: (data) => {
-      console.log('Mutation success:', data);
+    onSuccess: () => {
       queryClient.invalidateQueries(['doctors']);
       toast.success(doctor ? 'Doctor updated successfully' : 'Doctor created successfully');
       onClose();
     },
     onError: (error) => {
-      console.error('Mutation error:', error);
-      const errorMessage = error.response?.data?.detail || 'Operation failed. Please try again.';
-      toast.error(errorMessage);
+      toast.error(error.response?.data?.detail || 'Operation failed. Please try again.');
     },
   });
 
@@ -85,26 +99,143 @@ export const DoctorForm = ({ isOpen, onClose, doctor }) => {
     mutation.mutate(data);
   };
 
+  const getFieldDelay = (index) => 0.05 + index * 0.03;
+
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose} title={doctor ? 'Edit Doctor' : 'Add New Doctor'}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Input placeholder="Full Name" {...register('doctor_name')} error={errors.doctor_name?.message} />
-        <Input placeholder="Specialization" {...register('specialization')} error={errors.specialization?.message} />
-        <Input placeholder="Phone" {...register('phone')} error={errors.phone?.message} />
-        <Input placeholder="Email" type="email" {...register('email')} error={errors.email?.message} />
-        <Input placeholder="Experience (years)" type="number" {...register('experience', { valueAsNumber: true })} error={errors.experience?.message} />
-        <Select options={[
-          { value: '', label: 'Select Availability' },
-          { value: 'Mon-Fri', label: 'Monday - Friday' },
-          { value: 'Mon-Sat', label: 'Monday - Saturday' },
-          { value: 'Weekends', label: 'Weekends' },
-        ]} {...register('availability')} error={errors.availability?.message} />
-        <div className="flex justify-end gap-3 pt-4 border-t border-border dark:border-dark-border">
-          <Button variant="secondary" type="button" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" type="submit" isLoading={mutation.isPending}>
-            {doctor ? 'Update' : 'Create'} Doctor
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(0) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Full Name <span className="text-danger">*</span>
+          </label>
+          <Input
+            placeholder="Enter doctor's full name"
+            {...register('doctor_name')}
+            error={errors.doctor_name?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(1) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Specialization <span className="text-danger">*</span>
+          </label>
+          <Input
+            placeholder="Enter specialization (e.g., Cardiology)"
+            {...register('specialization')}
+            error={errors.specialization?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(2) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Phone
+          </label>
+          <Input
+            placeholder="Enter phone number"
+            {...register('phone')}
+            error={errors.phone?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(3) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Email
+          </label>
+          <Input
+            placeholder="Enter email address"
+            type="email"
+            {...register('email')}
+            error={errors.email?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(4) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Experience (years)
+          </label>
+          <Input
+            placeholder="Enter years of experience"
+            type="number"
+            {...register('experience', { valueAsNumber: true })}
+            error={errors.experience?.message}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        <motion.div 
+          className="space-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(5) }}
+        >
+          <label className="block text-sm font-medium text-text dark:text-dark-text">
+            Availability
+          </label>
+          <Select
+            options={[
+              { value: '', label: 'Select Availability' },
+              { value: 'Mon-Fri', label: 'Monday - Friday' },
+              { value: 'Mon-Sat', label: 'Monday - Saturday' },
+              { value: 'Weekends', label: 'Weekends' },
+            ]}
+            {...register('availability')}
+            error={errors.availability?.message}
+            placeholder="Select Availability"
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          />
+        </motion.div>
+
+        <motion.div 
+          className="flex justify-end gap-3 pt-4 mt-4 border-t border-white/20 dark:border-dark-border/20"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...fieldSpring, delay: getFieldDelay(6) }}
+        >
+          <Button 
+            variant="secondary" 
+            type="button" 
+            onClick={onClose}
+            className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
+          >
+            Cancel
           </Button>
-        </div>
+          <Button 
+            variant="primary" 
+            type="submit" 
+            isLoading={mutation.isPending}
+          >
+            {doctor ? 'Update Doctor' : 'Create Doctor'}
+          </Button>
+        </motion.div>
       </form>
     </BottomSheet>
   );

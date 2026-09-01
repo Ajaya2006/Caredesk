@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, UUID4, EmailStr
 from typing import Optional
 
 class Token(BaseModel):
@@ -19,3 +19,8 @@ class UserOut(BaseModel):
     
     class Config:
         from_attributes = True
+
+class UserCreate(BaseModel):
+    name: str
+    email: EmailStr
+    password: str

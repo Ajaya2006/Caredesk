@@ -1,4 +1,6 @@
-import { useState } from "react";
+// frontend/src/features/auth/pages/Login.jsx
+
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -14,11 +16,11 @@ import {
 import { login, googleLogin as googleLoginApi } from "../../../api/auth";
 import { toast } from "sonner";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useUserStore } from "../../../store/userStore";
 
 const formatError = (error) => {
   if (!error) return "";
   if (typeof error === "string") return error;
-
   if (Array.isArray(error)) {
     return error
       .map((item) => {
@@ -33,7 +35,6 @@ const formatError = (error) => {
       .filter(Boolean)
       .join("; ");
   }
-
   if (error?.response?.data?.detail) {
     return formatError(error.response.data.detail);
   }
@@ -93,11 +94,16 @@ function GoogleLoginButton({ onSuccess, onError, isLoading }) {
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser, fetchUser, reset } = useUserStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    reset();
+  }, []);
 
   const handleGoogleSuccess = async (tokenResponse) => {
     try {
@@ -110,8 +116,15 @@ export default function Login() {
       if (token) {
         localStorage.setItem("token", token);
         sessionStorage.setItem("token", token);
-        toast.success("Welcome back!");
-        navigate("/dashboard");
+        
+        const userData = await fetchUser();
+        if (userData) {
+          setUser(userData);
+          toast.success(`Welcome, ${userData.full_name || 'User'}!`);
+          navigate("/dashboard", { replace: true });
+        } else {
+          setError("Failed to get user data");
+        }
       } else {
         setError("Google login failed");
       }
@@ -134,11 +147,19 @@ export default function Login() {
     try {
       const response = await login(email, password);
       const token = response.data?.access_token;
+      
       if (token) {
         localStorage.setItem("token", token);
         sessionStorage.setItem("token", token);
-        toast.success("Welcome back!");
-        navigate("/dashboard");
+        
+        const userData = await fetchUser();
+        if (userData) {
+          setUser(userData);
+          toast.success(`Welcome, ${userData.full_name || 'User'}!`);
+          navigate("/dashboard", { replace: true });
+        } else {
+          setError("Failed to get user data");
+        }
       } else {
         setError("Invalid credentials");
       }
@@ -151,32 +172,17 @@ export default function Login() {
 
   return (
     <div className="min-h-screen w-full flex bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-slate-950 dark:to-slate-900">
-      {/* Left Panel - Branding */}
+      {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20" />
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: `url(${import.meta.env.BASE_URL}illustrations/login-hero.png)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+        <div className="absolute inset-0 bg-[url('/illustrations/login-hero.png')] bg-cover bg-center opacity-10" />
 
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div className="flex items-center gap-3">
-            <img
-              src={`${import.meta.env.BASE_URL}logo.png`}
-              alt="CareDesk"
-              className="h-12 w-12 object-contain"
-            />
+            <img src="/logo.png" alt="CareDesk" className="h-12 w-12 object-contain" />
             <div>
-              <p className="text-display text-2xl font-semibold text-text dark:text-dark-text">
-                CareDesk
-              </p>
-              <p className="text-xs text-muted dark:text-dark-muted">
-                Clinic Appointment & Patient Desk
-              </p>
+              <p className="text-display text-2xl font-semibold text-text dark:text-dark-text">CareDesk</p>
+              <p className="text-xs text-muted dark:text-dark-muted">Clinic Appointment & Patient Desk</p>
             </div>
           </div>
 
@@ -187,8 +193,7 @@ export default function Login() {
               <span className="text-primary-500">Management</span>
             </h1>
             <p className="text-muted dark:text-dark-muted text-lg mb-8">
-              Streamline your clinic operations with our comprehensive patient
-              and appointment management system.
+              Streamline your clinic operations with our comprehensive patient and appointment management system.
             </p>
 
             <div className="space-y-4">
@@ -207,9 +212,7 @@ export default function Login() {
                   <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center">
                     <item.icon className="w-5 h-5 text-primary-500" />
                   </div>
-                  <span className="text-text dark:text-dark-text">
-                    {item.text}
-                  </span>
+                  <span className="text-text dark:text-dark-text">{item.text}</span>
                 </motion.div>
               ))}
             </div>
@@ -227,19 +230,15 @@ export default function Login() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + idx * 0.1 }}
               >
-                <div className="text-3xl font-bold text-text dark:text-dark-text">
-                  {stat.number}
-                </div>
-                <div className="text-sm text-muted dark:text-dark-muted">
-                  {stat.label}
-                </div>
+                <div className="text-3xl font-bold text-text dark:text-dark-text">{stat.number}</div>
+                <div className="text-sm text-muted dark:text-dark-muted">{stat.label}</div>
               </motion.div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Right Panel - Login Form */}
+      {/* Right Panel */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -248,28 +247,16 @@ export default function Login() {
           className="w-full max-w-[420px]"
         >
           <div className="flex items-center justify-center gap-3 mb-8 lg:hidden">
-            <img
-              src={`${import.meta.env.BASE_URL}logo.png`}
-              alt="CareDesk"
-              className="h-10 w-10 object-contain"
-            />
+            <img src="/logo.png" alt="CareDesk" className="h-10 w-10 object-contain" />
             <div>
-              <p className="text-display text-lg font-semibold text-text dark:text-dark-text">
-                CareDesk
-              </p>
-              <p className="text-[10px] text-muted dark:text-dark-muted">
-                Clinic Appointment & Patient Desk
-              </p>
+              <p className="text-display text-lg font-semibold text-text dark:text-dark-text">CareDesk</p>
+              <p className="text-[10px] text-muted dark:text-dark-muted">Clinic Appointment & Patient Desk</p>
             </div>
           </div>
 
           <div className="mb-8 text-center lg:text-left">
-            <h2 className="text-3xl font-bold text-text dark:text-dark-text">
-              Welcome Back
-            </h2>
-            <p className="text-muted dark:text-dark-muted mt-1">
-              Sign in to continue to your clinic dashboard
-            </p>
+            <h2 className="text-3xl font-bold text-text dark:text-dark-text">Welcome Back</h2>
+            <p className="text-muted dark:text-dark-muted mt-1">Sign in to continue to your clinic dashboard</p>
           </div>
 
           {clientId ? (
@@ -292,9 +279,7 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-text dark:text-dark-text mb-1.5">
-                Username or email
-              </label>
+              <label className="block text-sm font-medium text-text dark:text-dark-text mb-1.5">Username or email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted dark:text-dark-muted" />
                 <input
@@ -310,15 +295,8 @@ export default function Login() {
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-sm font-medium text-text dark:text-dark-text">
-                  Password
-                </label>
-                <button
-                  type="button"
-                  className="text-xs text-primary-500 hover:underline"
-                >
-                  Forgot password?
-                </button>
+                <label className="block text-sm font-medium text-text dark:text-dark-text">Password</label>
+                <button type="button" className="text-xs text-primary-500 hover:underline">Forgot password?</button>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted dark:text-dark-muted" />
@@ -335,11 +313,7 @@ export default function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted dark:text-dark-muted hover:text-text dark:hover:text-dark-text transition-colors"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -372,10 +346,7 @@ export default function Login() {
 
           <p className="mt-6 text-center text-sm text-muted dark:text-dark-muted">
             New to CareDesk?{" "}
-            <button
-              onClick={() => navigate("/signup")}
-              className="text-primary-500 font-medium hover:underline"
-            >
+            <button onClick={() => navigate("/signup")} className="text-primary-500 font-medium hover:underline">
               Create an account
             </button>
           </p>

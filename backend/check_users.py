@@ -11,6 +11,7 @@ def check_users():
         print(f"   Email: {user.email}")
         print(f"   Full Name: {user.full_name}")
         print(f"   Role: {user.role}")
+        print(f"   is_active: {user.is_active}")
         print("   ---")
     
     db.close()

@@ -1,4 +1,6 @@
-﻿import api from "./index";
+﻿// frontend/src/api/auth.js
+
+import api from "./index";
 
 export const login = (email, password) => {
   const data = new URLSearchParams();
@@ -9,8 +11,8 @@ export const login = (email, password) => {
   });
 };
 
-export const register = (formData) => {
-  return api.post('/auth/register', formData);
+export const register = (userData) => {
+  return api.post('/auth/register', userData);
 };
 
 export const googleLogin = (accessToken) => {
@@ -23,7 +25,47 @@ export const logout = () => {
 };
 
 export const getCurrentUser = () => {
-  const token = localStorage.getItem('token');
-  if (!token) return null;
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  if (!token) {
+    return Promise.reject(new Error('No token found'));
+  }
   return api.get('/auth/me');
+};
+
+// For Google login, get user info from Google API
+export const getGoogleUserInfo = async (accessToken) => {
+  try {
+    const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch Google user info');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('❌ Error fetching Google user info:', error);
+    throw error;
+  }
+};
+
+// Get user with profile image from Google
+export const getCurrentUserWithImage = async () => {
+  try {
+    const response = await getCurrentUser();
+    const userData = response.data;
+    
+    // If user has a Google picture, add it to the user object
+    if (userData && userData.picture) {
+      userData.profile_image = userData.picture;
+    }
+    
+    return userData;
+  } catch (error) {
+    console.error('❌ Error fetching user with image:', error);
+    throw error;
+  }
 };

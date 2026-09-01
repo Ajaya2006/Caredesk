@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Space+Grotesk:wght@700&display=swap');
+/* frontend/src/styles/globals.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Manrope:wght@600;700&family=Space+Grotesk:wght@700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -12,7 +14,7 @@
   }
 
   body {
-    @apply font-body bg-background text-text antialiased transition-colors duration-300;
+    @apply font-body bg-background text-text-body antialiased transition-colors duration-300;
   }
 
   h1, h2, h3, h4, h5 {
@@ -21,7 +23,7 @@
 }
 
 @layer components {
-  /* Frosted Glass Effects - Using standard Tailwind classes */
+  /* Frosted Glass Effects */
   .frosted {
     @apply bg-white/60 dark:bg-dark-surface/60 backdrop-blur-lg border border-white/20 dark:border-dark-border/20 shadow-lg;
   }
@@ -31,7 +33,7 @@
   }
 
   .frosted-card:hover {
-    @apply shadow-xl;
+    @apply shadow-xl -translate-y-1;
   }
 
   .frosted-heavy {
@@ -49,7 +51,7 @@
 
   /* Hero Frosted */
   .hero-frosted {
-    @apply bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-secondary-500/20 dark:from-primary-500/30 dark:via-primary-500/20 dark:to-secondary-500/30 backdrop-blur-sm border border-white/20 dark:border-dark-border/20;
+    @apply bg-gradient-to-r from-primary-500/20 via-purple-500/20 to-secondary-500/20 dark:from-primary-500/30 dark:via-purple-500/30 dark:to-secondary-500/30 backdrop-blur-sm border border-white/20 dark:border-dark-border/20;
   }
 
   /* Bottom Sheet Animation */
@@ -94,7 +96,7 @@
 
   @keyframes scaleIn {
     from {
-      transform: scale(0.9);
+      transform: scale(0.96);
       opacity: 0;
     }
     to {
@@ -126,18 +128,40 @@
     background-color: #F8FAFC;
   }
   .dark .bg-background {
-    background-color: #0F172A;
+    background-color: #0B1220;
   }
-  .text-text {
+  
+  .text-text-body {
+    color: #334155;
+  }
+  .dark .text-text-body {
+    color: #CBD5E1;
+  }
+  
+  .text-text-heading {
     color: #0F172A;
   }
-  .dark .text-text {
-    color: #F1F5F9;
+  .dark .text-text-heading {
+    color: #F8FAFC;
   }
+  
   .border-border {
     border-color: #E2E8F0;
   }
   .dark .border-border {
     border-color: #334155;
+  }
+
+  /* Gradient Utilities */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
+  }
+  
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #06B6D4 100%);
+  }
+  
+  .bg-gradient-success {
+    background: linear-gradient(135deg, #10B981 0%, #22C55E 100%);
   }
 }

@@ -42,7 +42,6 @@ def create_patient(
     try:
         return service.create(data)
     except Exception as e:
-        print(f"❌ Error creating patient: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.put("/{patient_id}", response_model=PatientOut)

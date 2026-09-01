@@ -1,7 +1,4 @@
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { X } from 'lucide-react';
-
+// ✅ FIXED – Drawer.jsx
 export const Drawer = ({ open, onClose, title, children }) => {
   return (
     <Transition appear show={open} as={Fragment}>
@@ -32,9 +29,7 @@ export const Drawer = ({ open, onClose, title, children }) => {
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
                   <div className="flex h-full flex-col bg-surface dark:bg-dark-surface shadow-xl">
                     <div className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-dark-border">
-                      <Dialog.Title className="text-lg font-heading font-bold text-text dark:text-dark-text">
-                        {title}
-                      </Dialog.Title>
+                      <Dialog.Title className="text-lg font-heading font-bold text-text dark:text-dark-text">{title}</Dialog.Title>
                       <button onClick={onClose} className="p-1 rounded-full hover:bg-background dark:hover:bg-dark-bg">
                         <X className="w-5 h-5 text-muted" />
                       </button>

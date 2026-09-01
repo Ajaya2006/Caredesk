@@ -13,9 +13,10 @@ import {
   Button,
   FrostedCard,
   Select
-} from '../../../Components/ui';
+} from '../../../components/ui';  // ← Fixed: lowercase 'components'
 import { AppointmentForm } from '../components/AppointmentForm';
-import { PageTransition } from '../../../Components/animations/PageTransition';
+import { AppointmentDetails } from '../components/AppointmentDetails';  // ← Added import
+import { PageTransition } from '../../../components/animations/PageTransition';  // ← Fixed: lowercase 'components'
 import { Plus, Pencil, Trash2, Calendar, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -240,6 +241,16 @@ export default function AppointmentList() {
         appointment={editingAppointment}
         doctors={doctors}
         patients={patients}
+      />
+
+      {/* Appointment Details Modal */}
+      <AppointmentDetails
+        isOpen={isDetailsOpen}
+        onClose={() => {
+          setIsDetailsOpen(false);
+          setViewingAppointment(null);
+        }}
+        appointment={viewingAppointment}
       />
     </PageTransition>
   );
