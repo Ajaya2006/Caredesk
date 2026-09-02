@@ -21,6 +21,7 @@ class Settings:
         "http://localhost:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
+        "https://ajaya2006.github.io",  # GitHub Pages frontend
         "https://caredesk-yi29.onrender.com",  # Your frontend
         "https://*.onrender.com",
     ]
