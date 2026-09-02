@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Phone, Mail, Calendar, User, Stethoscope, Award, Clock, Briefcase, Heart } from 'lucide-react';
 import { getAvatar, getFallbackColor } from '../../../lib/avatarService';
-import { StatusChip, Button } from '../../../components/ui';
+import { StatusChip, Button } from '../../../Components/ui';
 
 export const DoctorDetails = ({ isOpen, onClose, doctor }) => {
   if (!doctor) return null;
@@ -28,7 +28,7 @@ export const DoctorDetails = ({ isOpen, onClose, doctor }) => {
             className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md"
             onClick={onClose}
           />
-          
+
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -155,9 +155,9 @@ export const DoctorDetails = ({ isOpen, onClose, doctor }) => {
                 </div>
 
                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-white/20 dark:border-dark-border/20">
-                  <Button 
-                    variant="secondary" 
-                    type="button" 
+                  <Button
+                    variant="secondary"
+                    type="button"
                     onClick={onClose}
                     className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
                   >

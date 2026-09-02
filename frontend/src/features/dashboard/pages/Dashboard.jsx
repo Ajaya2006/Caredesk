@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getDashboardSummary } from '../../../api/dashboard';
-import { StatCard, FrostedCard } from '../../../components/ui';
-import { PageTransition } from '../../../components/animations/PageTransition';
+import { StatCard, FrostedCard } from '../../../Components/ui';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { Stethoscope, Users, Calendar, Clock, CheckCircle, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useUserStore } from '../../../store/userStore';
@@ -12,7 +12,7 @@ import { useUserStore } from '../../../store/userStore';
 export default function Dashboard() {
   const { user, fetchUser, isLoading: userLoading } = useUserStore();
   const [isReady, setIsReady] = useState(false);
-  
+
   useEffect(() => {
     const loadUser = async () => {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -21,7 +21,7 @@ export default function Dashboard() {
       }
       setIsReady(true);
     };
-    
+
     loadUser();
   }, [user, fetchUser]);
 
@@ -66,11 +66,11 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-muted dark:text-dark-muted">
-              {new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
               })}
             </span>
             <button className="p-2 rounded-xl bg-primary-500/10 text-primary-500 hover:bg-primary-500/20 transition-colors">

@@ -13,10 +13,10 @@ import {
   Button,
   FrostedCard,
   Select
-} from '../../../components/ui';  // ← Fixed: lowercase 'components'
+} from '../../../Components/ui';
 import { AppointmentForm } from '../components/AppointmentForm';
-import { AppointmentDetails } from '../components/AppointmentDetails';  // ← Added import
-import { PageTransition } from '../../../components/animations/PageTransition';  // ← Fixed: lowercase 'components'
+import { AppointmentDetails } from '../components/AppointmentDetails';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { Plus, Pencil, Trash2, Calendar, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';

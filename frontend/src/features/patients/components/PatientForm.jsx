@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPatient, updatePatient } from '../../../api/patients';
-import { BottomSheet, Button, Input, Select } from '../../../components/ui';
+import { BottomSheet, Button, Input, Select } from '../../../Components/ui';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -112,7 +112,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
     <BottomSheet isOpen={isOpen} onClose={onClose} title={patient ? 'Edit Patient' : 'Add New Patient'}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Full Name */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,7 +130,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         </motion.div>
 
         {/* Phone */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -148,7 +148,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         </motion.div>
 
         {/* Email */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -167,7 +167,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         </motion.div>
 
         {/* Age */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -186,7 +186,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         </motion.div>
 
         {/* Gender */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -210,7 +210,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         </motion.div>
 
         {/* Address */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -227,7 +227,7 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         </motion.div>
 
         {/* Visit Reason */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -244,23 +244,23 @@ export const PatientForm = ({ isOpen, onClose, patient }) => {
         </motion.div>
 
         {/* Action Buttons */}
-        <motion.div 
+        <motion.div
           className="flex justify-end gap-3 pt-4 mt-4 border-t border-white/20 dark:border-dark-border/20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...fieldSpring, delay: getFieldDelay(7) }}
         >
-          <Button 
-            variant="secondary" 
-            type="button" 
+          <Button
+            variant="secondary"
+            type="button"
             onClick={onClose}
             className="bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm border-white/30 dark:border-dark-border/30"
           >
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
-            type="submit" 
+          <Button
+            variant="primary"
+            type="submit"
             isLoading={mutation.isPending}
           >
             {patient ? 'Update Patient' : 'Create Patient'}

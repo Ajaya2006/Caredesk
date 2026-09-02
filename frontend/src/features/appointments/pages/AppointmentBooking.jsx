@@ -7,8 +7,8 @@ import { z } from 'zod';
 import { getPatients } from '../../../api/patients';
 import { getDoctors } from '../../../api/doctors';
 import { createAppointment } from '../../../api/appointments';
-import { Card, Input, Select, Button, FrostedCard } from '../../../components/ui';
-import { PageTransition } from '../../../components/animations/PageTransition';
+import { Card, Input, Select, Button, FrostedCard } from '../../../Components/ui';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { Calendar, Clock, User, Stethoscope, FileText, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -35,7 +35,7 @@ export default function AppointmentBooking() {
     queryKey: ['patients'],
     queryFn: getPatients,
   });
-  
+
   const { data: doctors = [] } = useQuery({
     queryKey: ['doctors'],
     queryFn: getDoctors,
@@ -101,7 +101,7 @@ export default function AppointmentBooking() {
       <FrostedCard className="max-w-2xl mx-auto">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Patient Select with Label */}
-          <motion.div 
+          <motion.div
             className="space-y-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,9 +113,9 @@ export default function AppointmentBooking() {
             <Select
               options={[
                 { value: '', label: 'Select Patient' },
-                ...patients.map((p) => ({ 
-                  value: String(p.patient_id), 
-                  label: p.patient_name 
+                ...patients.map((p) => ({
+                  value: String(p.patient_id),
+                  label: p.patient_name
                 })),
               ]}
               {...register('patient_id')}
@@ -126,7 +126,7 @@ export default function AppointmentBooking() {
           </motion.div>
 
           {/* Doctor Select with Label */}
-          <motion.div 
+          <motion.div
             className="space-y-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -138,9 +138,9 @@ export default function AppointmentBooking() {
             <Select
               options={[
                 { value: '', label: 'Select Doctor' },
-                ...doctors.map((d) => ({ 
-                  value: String(d.doctor_id), 
-                  label: d.doctor_name 
+                ...doctors.map((d) => ({
+                  value: String(d.doctor_id),
+                  label: d.doctor_name
                 })),
               ]}
               {...register('doctor_id')}
@@ -151,7 +151,7 @@ export default function AppointmentBooking() {
           </motion.div>
 
           {/* Date with Label */}
-          <motion.div 
+          <motion.div
             className="space-y-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -170,7 +170,7 @@ export default function AppointmentBooking() {
           </motion.div>
 
           {/* Time with Label */}
-          <motion.div 
+          <motion.div
             className="space-y-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -189,7 +189,7 @@ export default function AppointmentBooking() {
           </motion.div>
 
           {/* Reason with Label */}
-          <motion.div 
+          <motion.div
             className="space-y-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -207,7 +207,7 @@ export default function AppointmentBooking() {
           </motion.div>
 
           {/* Remarks with Label */}
-          <motion.div 
+          <motion.div
             className="space-y-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -225,7 +225,7 @@ export default function AppointmentBooking() {
           </motion.div>
 
           {/* Submit Button */}
-          <motion.div 
+          <motion.div
             className="pt-4 mt-4 border-t border-white/20 dark:border-dark-border/20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

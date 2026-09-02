@@ -8,7 +8,7 @@ import {
   createAppointment,
   updateAppointment,
 } from "../../../api/appointments";
-import { BottomSheet, Button, Input, Select } from "../../../components/ui";
+import { BottomSheet, Button, Input, Select } from "../../../Components/ui";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
@@ -130,7 +130,7 @@ export const AppointmentForm = ({
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Patient Select with Label */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -156,7 +156,7 @@ export const AppointmentForm = ({
         </motion.div>
 
         {/* Doctor Select with Label */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -182,7 +182,7 @@ export const AppointmentForm = ({
         </motion.div>
 
         {/* Date with Label */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -200,7 +200,7 @@ export const AppointmentForm = ({
         </motion.div>
 
         {/* Time with Label */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -218,7 +218,7 @@ export const AppointmentForm = ({
         </motion.div>
 
         {/* Reason with Label */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -235,7 +235,7 @@ export const AppointmentForm = ({
         </motion.div>
 
         {/* Remarks with Label */}
-        <motion.div 
+        <motion.div
           className="space-y-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -252,15 +252,15 @@ export const AppointmentForm = ({
         </motion.div>
 
         {/* Action Buttons */}
-        <motion.div 
+        <motion.div
           className="flex justify-end gap-3 pt-4 mt-4 border-t border-white/20 dark:border-dark-border/20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...fieldSpring, delay: getFieldDelay(6) }}
         >
-          <Button 
-            variant="secondary" 
-            type="button" 
+          <Button
+            variant="secondary"
+            type="button"
             onClick={() => {
               reset();
               onClose();

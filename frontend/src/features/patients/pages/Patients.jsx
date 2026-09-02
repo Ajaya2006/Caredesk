@@ -11,8 +11,8 @@ import {
   FrostedCard,
   Input,
   Select
-} from '../../../components/ui';
-import { PageTransition } from '../../../components/animations/PageTransition';
+} from '../../../Components/ui';
+import { PageTransition } from '../../../Components/animations/PageTransition';
 import { PatientForm } from '../components/PatientForm';
 import { PatientDetails } from '../components/PatientDetails';
 import { Plus, Pencil, Trash2, Users, Phone, Mail, MapPin, Search, Eye } from 'lucide-react';
